@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -24,7 +25,7 @@ abstract class DeviceCornerRadiusPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<BorderRadius> getCornerRadius() {
+  Future<BorderRadius> getCornerRadius(double devicePixelRatio) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 }

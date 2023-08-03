@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
@@ -10,19 +12,21 @@ class MethodChannelDeviceCornerRadius extends DeviceCornerRadiusPlatform {
   final methodChannel = const MethodChannel('device_corner_radius');
 
   @override
-  Future<BorderRadius> getCornerRadius() async {
+  Future<BorderRadius> getCornerRadius(double devicePixelRatio) async {
+    final adjustment = Platform.isIOS ? 1.0 : devicePixelRatio;
+    double getRadius(Object obj) => (double.tryParse(obj.toString()) ?? 0) / adjustment;
+
     final radii = await methodChannel.invokeMethod('getCornerRadius');
     try {
       radii as Map;
       return BorderRadius.only(
-        topLeft: Radius.circular(radii['topLeft'] as double),
-        topRight: Radius.circular(radii['topRight'] as double),
-        bottomLeft: Radius.circular(radii['bottomLeft'] as double),
-        bottomRight: Radius.circular(radii['bottomRight'] as double),
+        topLeft: Radius.circular(getRadius(radii['topLeft'])),
+        topRight: Radius.circular(getRadius(radii['topRight'])),
+        bottomLeft: Radius.circular(getRadius(radii['bottomLeft'])),
+        bottomRight: Radius.circular(getRadius(radii['bottomRight'])),
       );
     } catch (e) {
       throw Exception('Failed to parse radii ');
     }
   }
-  
 }
